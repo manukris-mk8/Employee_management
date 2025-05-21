@@ -8,32 +8,25 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
-let Employee = class Employee {
+const abstract_entity_1 = __importDefault(require("./abstract.entity"));
+const employee_entity_1 = __importDefault(require("./employee.entity"));
+let Department = class Department extends abstract_entity_1.default {
 };
-__decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
-], Employee.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)({ unique: true }),
     __metadata("design:type", String)
-], Employee.prototype, "email", void 0);
+], Department.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Employee.prototype, "name", void 0);
-__decorate([
-    (0, typeorm_1.CreateDateColumn)(),
-    __metadata("design:type", Date)
-], Employee.prototype, "createdAt", void 0);
-__decorate([
-    (0, typeorm_1.UpdateDateColumn)(),
-    __metadata("design:type", Date)
-], Employee.prototype, "updatedAt", void 0);
-Employee = __decorate([
+    (0, typeorm_1.OneToMany)(() => employee_entity_1.default, (employee) => employee.department),
+    __metadata("design:type", Array)
+], Department.prototype, "employees", void 0);
+Department = __decorate([
     (0, typeorm_1.Entity)()
-], Employee);
-exports.default = Employee;
-//# sourceMappingURL=employee.entity.js.map
+], Department);
+exports.default = Department;
+//# sourceMappingURL=department.entity.js.map

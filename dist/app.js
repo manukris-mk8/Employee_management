@@ -13,16 +13,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const employee_router_1 = __importDefault(require("./employee_router"));
-const loggerMiddleware_1 = __importDefault(require("./loggerMiddleware"));
-const processTimeMiddleware_1 = require("./processTimeMiddleware");
-const data_source_1 = __importDefault(require("./data-source"));
+const employee_route_1 = __importDefault(require("./routes/employee.route"));
+const loggerMiddleware_1 = __importDefault(require("./middlewares/loggerMiddleware"));
+const processTimeMiddleware_1 = require("./middlewares/processTimeMiddleware");
+const data_source_1 = __importDefault(require("./db/data-source"));
+const errorHandlingMiddleware_1 = require("./middlewares/errorHandlingMiddleware");
 const { Client } = require('pg');
 const server = (0, express_1.default)();
 server.use(express_1.default.json());
 server.use(loggerMiddleware_1.default);
 server.use(processTimeMiddleware_1.processTimeMiddleware);
-server.use("/employee", employee_router_1.default);
+server.use("/employee", employee_route_1.default);
+server.use(errorHandlingMiddleware_1.errorHandlineMiddleware);
 server.get("/", (req, res) => {
     res.status(200).send("Hello world");
 });

@@ -13,8 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const employee_entity_1 = __importDefault(require("./employee.entity"));
-const data_source_1 = __importDefault(require("./data-source"));
+const employee_entity_1 = __importDefault(require("./entities/employee.entity"));
+const data_source_1 = __importDefault(require("./db/data-source"));
 const employeeRouter = express_1.default.Router();
 employeeRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const employeeRepository = data_source_1.default.getRepository(employee_entity_1.default);

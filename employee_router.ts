@@ -1,6 +1,6 @@
 import express from "express";
-import Employee from "./employee.entity";
-import datasource from "./data-source";
+import Employee from "./entities/employee.entity";
+import datasource from "./db/data-source";
 
 const employeeRouter = express.Router();
 

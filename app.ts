@@ -1,8 +1,9 @@
 import express, { Request, Response } from "express";
-import employeeRouter from "./employee_router";
-import loggerMiddleware from "./loggerMiddleware";
-import { processTimeMiddleware } from "./processTimeMiddleware";
-import datasource from "./data-source";
+import employeeRouter from "./routes/employee.route";
+import loggerMiddleware from "./middlewares/loggerMiddleware";
+import { processTimeMiddleware } from "./middlewares/processTimeMiddleware";
+import datasource from "./db/data-source";
+import { errorHandlineMiddleware } from "./middlewares/errorHandlingMiddleware";
 
 const {Client} = require('pg');
 
@@ -12,6 +13,9 @@ server.use(loggerMiddleware);
 server.use(processTimeMiddleware);
 
 server.use("/employee", employeeRouter);
+
+server.use(errorHandlineMiddleware)
+
 
 server.get("/", (req: Request, res: Response) => {
   res.status(200).send("Hello world");

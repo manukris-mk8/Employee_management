@@ -1,0 +1,118 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const httpExceptions_1 = __importDefault(require("../exceptions/httpExceptions"));
+const create_employee_dto_1 = require("../dto/create-employee.dto");
+const class_validator_1 = require("class-validator");
+const class_transformer_1 = require("class-transformer");
+class EmployeeController {
+    constructor(employeeService, router) {
+        this.employeeService = employeeService;
+        router.post("/", this.createEmployee.bind(this));
+        router.get("/", this.getAllEmployees.bind(this));
+        router.get("/:id", this.getEmployeeById.bind(this));
+        router.put("/:id", this.updateEmployee.bind(this));
+        router.delete("/:id", this.removeEmployee.bind(this));
+    }
+    createEmployee(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const createEmployeeDto = (0, class_transformer_1.plainToInstance)(create_employee_dto_1.CreateEmployeeDto, req.body);
+                const errors = yield (0, class_validator_1.validate)(createEmployeeDto);
+                if (errors.length > 0) {
+                    console.log(JSON.stringify(errors));
+                    throw new httpExceptions_1.default(400, JSON.stringify(errors));
+                }
+                const savedEmployee = yield this.employeeService.createEmployee(createEmployeeDto.email, createEmployeeDto.name, createEmployeeDto.age, createEmployeeDto.address);
+                res.status(201).send(savedEmployee);
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    }
+    getAllEmployees(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const employees = yield this.employeeService.getAllEmployees();
+                res.status(200).send(employees);
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    }
+    getEmployeeById(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const id = Number(req.params.id);
+                if (isNaN(id)) {
+                    throw new httpExceptions_1.default(400, "Invalid employee ID");
+                }
+                const employee = yield this.employeeService.getEmployeeById(id);
+                if (!employee) {
+                    throw new httpExceptions_1.default(404, "employee not found");
+                }
+                res.status(200).send(employee);
+            }
+            catch (error) {
+                console.log(error);
+                next(error);
+            }
+        });
+    }
+    updateEmployee(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const id = Number(req.params.id);
+                if (isNaN(id)) {
+                    throw new httpExceptions_1.default(400, "Invalid employee ID");
+                }
+                const employeeDto = (0, class_transformer_1.plainToInstance)(create_employee_dto_1.CreateEmployeeDto, req.body);
+                const errors = yield (0, class_validator_1.validate)(employeeDto);
+                if (errors.length > 0) {
+                    console.log(JSON.stringify(errors));
+                    throw new httpExceptions_1.default(400, JSON.stringify(errors));
+                }
+                yield this.employeeService.updateEmployeeById(id, employeeDto.name, employeeDto.email, employeeDto.age, employeeDto.address);
+                res.status(200).send({ message: "Employee updated successfully" });
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    }
+    // async deleteEmployee(req: Request, res: Response) {
+    //     const id = Number(req.params.id);
+    //     await this.employeeService.deleteEmployeeById(id);
+    //     res.status(200).send();
+    // }
+    removeEmployee(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const id = Number(req.params.id);
+                if (isNaN(id)) {
+                    throw new httpExceptions_1.default(400, "Invalid employee ID");
+                }
+                yield this.employeeService.removeEmployeeById(id);
+                res.status(200).send({ message: "Employee deleted successfully" });
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    }
+}
+exports.default = EmployeeController;
+//# sourceMappingURL=employee.controller.js.map

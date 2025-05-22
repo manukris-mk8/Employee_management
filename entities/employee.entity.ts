@@ -27,6 +27,9 @@ class Employee  extends AbstractEntity{
       onDelete: 'CASCADE'
     })
     department: Department
+
+    @Column()
+    password: string
   }
   
   export default Employee;

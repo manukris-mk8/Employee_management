@@ -1,6 +1,6 @@
-import { plainToInstance } from "class-transformer";
 import { CreateAddressDto } from "../dto/create-address.dto";
 import Address from "../entities/address.entity";
+import Department from "../entities/department.entity";
 import Employee from "../entities/employee.entity";
 import EmployeeRepository from "../repositories/employee.repository";
 
@@ -17,6 +17,7 @@ class EmployeeService {
         newEmployee.email= email;
         newEmployee.age = age;
         newEmployee.address = newAddress;
+        // newEmployee.department = department;
         
         return this.employeeRepository.create(newEmployee);
     }
@@ -40,6 +41,7 @@ class EmployeeService {
             existingEmployee.email = email || existingEmployee.email;
             existingEmployee.age = age || existingEmployee.age;
             existingEmployee.address = newAddress || existingEmployee.address;
+            // existingEmployee.department = department || existingEmployee.department
             await this.employeeRepository.update(id,existingEmployee);
         } 
     }

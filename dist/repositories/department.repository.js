@@ -9,21 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-class EmployeeRepository {
+class DepartmentRepository {
     constructor(repository) {
         this.repository = repository;
     }
-    create(employee) {
+    create(department) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.repository.save(employee);
+            return this.repository.save(department);
         });
     }
     findMany() {
         return __awaiter(this, void 0, void 0, function* () {
             return this.repository.find({
-                relations: {
-                    address: true
-                }
+                relations: { employees: true }
             });
         });
     }
@@ -31,15 +29,13 @@ class EmployeeRepository {
         return __awaiter(this, void 0, void 0, function* () {
             return this.repository.findOne({
                 where: { id },
-                relations: {
-                    address: true
-                }
+                relations: { employees: true }
             });
         });
     }
-    update(id, employee) {
+    update(id, department) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.repository.save(Object.assign({ id }, employee));
+            yield this.repository.save(Object.assign({ id }, department));
         });
     }
     delete(id) {
@@ -47,11 +43,11 @@ class EmployeeRepository {
             yield this.repository.delete(id);
         });
     }
-    remove(employee) {
+    remove(department) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.repository.softRemove(employee);
+            yield this.repository.remove(department);
         });
     }
 }
-exports.default = EmployeeRepository;
-//# sourceMappingURL=employee.repository.js.map
+exports.default = DepartmentRepository;
+//# sourceMappingURL=department.repository.js.map

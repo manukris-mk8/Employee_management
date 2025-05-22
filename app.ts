@@ -4,6 +4,7 @@ import loggerMiddleware from "./middlewares/loggerMiddleware";
 import { processTimeMiddleware } from "./middlewares/processTimeMiddleware";
 import datasource from "./db/data-source";
 import { errorHandlineMiddleware } from "./middlewares/errorHandlingMiddleware";
+import departmentRouter from "./routes/department.routes";
 
 const {Client} = require('pg');
 
@@ -13,6 +14,8 @@ server.use(loggerMiddleware);
 server.use(processTimeMiddleware);
 
 server.use("/employee", employeeRouter);
+server.use("/department", departmentRouter);
+
 
 server.use(errorHandlineMiddleware)
 

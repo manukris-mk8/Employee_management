@@ -28,6 +28,7 @@ class EmployeeService {
             newEmployee.email = email;
             newEmployee.age = age;
             newEmployee.address = newAddress;
+            // newEmployee.department = department;
             return this.employeeRepository.create(newEmployee);
         });
     }
@@ -52,6 +53,7 @@ class EmployeeService {
                 existingEmployee.email = email || existingEmployee.email;
                 existingEmployee.age = age || existingEmployee.age;
                 existingEmployee.address = newAddress || existingEmployee.address;
+                // existingEmployee.department = department || existingEmployee.department
                 yield this.employeeRepository.update(id, existingEmployee);
             }
         });

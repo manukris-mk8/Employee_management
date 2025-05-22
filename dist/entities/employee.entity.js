@@ -45,6 +45,10 @@ __decorate([
     }),
     __metadata("design:type", department_entity_1.default)
 ], Employee.prototype, "department", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Employee.prototype, "password", void 0);
 Employee = __decorate([
     (0, typeorm_1.Entity)()
 ], Employee);

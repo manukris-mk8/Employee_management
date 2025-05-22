@@ -37,6 +37,13 @@ class EmployeeRepository {
             });
         });
     }
+    findByEmail(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.repository.findOne({
+                where: { email: email }
+            });
+        });
+    }
     update(id, employee) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.repository.save(Object.assign({ id }, employee));

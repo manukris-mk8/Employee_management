@@ -14,11 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const address_entity_1 = __importDefault(require("../entities/address.entity"));
 const employee_entity_1 = __importDefault(require("../entities/employee.entity"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 class EmployeeService {
     constructor(employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
-    createEmployee(email, name, age, address) {
+    createEmployee(email, name, age, role, password, address) {
         return __awaiter(this, void 0, void 0, function* () {
             const newAddress = new address_entity_1.default();
             newAddress.line1 = address.line1;
@@ -27,6 +28,8 @@ class EmployeeService {
             newEmployee.name = name;
             newEmployee.email = email;
             newEmployee.age = age;
+            newEmployee.role = role;
+            newEmployee.password = yield bcrypt_1.default.hash(password, 10);
             newEmployee.address = newAddress;
             // newEmployee.department = department;
             return this.employeeRepository.create(newEmployee);
@@ -42,7 +45,12 @@ class EmployeeService {
             return this.employeeRepository.findById(id);
         });
     }
-    updateEmployeeById(id, name, email, age, address) {
+    getEmployeeByEmail(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.employeeRepository.findByEmail(email);
+        });
+    }
+    updateEmployeeById(id, name, email, age, role, password, address) {
         return __awaiter(this, void 0, void 0, function* () {
             const existingEmployee = yield this.employeeRepository.findById(id);
             if (existingEmployee) {
@@ -52,6 +60,8 @@ class EmployeeService {
                 existingEmployee.name = name || existingEmployee.name;
                 existingEmployee.email = email || existingEmployee.email;
                 existingEmployee.age = age || existingEmployee.age;
+                existingEmployee.role = role || existingEmployee.role;
+                existingEmployee.password = (yield bcrypt_1.default.hash(password, 10)) || existingEmployee.password;
                 existingEmployee.address = newAddress || existingEmployee.address;
                 // existingEmployee.department = department || existingEmployee.department
                 yield this.employeeRepository.update(id, existingEmployee);

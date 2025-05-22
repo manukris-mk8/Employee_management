@@ -5,6 +5,8 @@ import { processTimeMiddleware } from "./middlewares/processTimeMiddleware";
 import datasource from "./db/data-source";
 import { errorHandlineMiddleware } from "./middlewares/errorHandlingMiddleware";
 import departmentRouter from "./routes/department.routes";
+import { authRouter } from "./routes/auth.route";
+import { authMiddleware } from "./middlewares/auth.middleware";
 
 const {Client} = require('pg');
 
@@ -13,8 +15,9 @@ server.use(express.json());
 server.use(loggerMiddleware);
 server.use(processTimeMiddleware);
 
-server.use("/employee", employeeRouter);
+server.use("/employee", authMiddleware, employeeRouter);
 server.use("/department", departmentRouter);
+server.use("/auth",authRouter)
 
 
 server.use(errorHandlineMiddleware)

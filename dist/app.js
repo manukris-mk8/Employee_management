@@ -19,13 +19,16 @@ const processTimeMiddleware_1 = require("./middlewares/processTimeMiddleware");
 const data_source_1 = __importDefault(require("./db/data-source"));
 const errorHandlingMiddleware_1 = require("./middlewares/errorHandlingMiddleware");
 const department_routes_1 = __importDefault(require("./routes/department.routes"));
+const auth_route_1 = require("./routes/auth.route");
+const auth_middleware_1 = require("./middlewares/auth.middleware");
 const { Client } = require('pg');
 const server = (0, express_1.default)();
 server.use(express_1.default.json());
 server.use(loggerMiddleware_1.default);
 server.use(processTimeMiddleware_1.processTimeMiddleware);
-server.use("/employee", employee_route_1.default);
+server.use("/employee", auth_middleware_1.authMiddleware, employee_route_1.default);
 server.use("/department", department_routes_1.default);
+server.use("/auth", auth_route_1.authRouter);
 server.use(errorHandlingMiddleware_1.errorHandlineMiddleware);
 server.get("/", (req, res) => {
     res.status(200).send("Hello world");

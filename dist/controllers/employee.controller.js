@@ -16,14 +16,16 @@ const httpExceptions_1 = __importDefault(require("../exceptions/httpExceptions")
 const create_employee_dto_1 = require("../dto/create-employee.dto");
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
+const authorization_middleware_1 = require("../middlewares/authorization.middleware");
+const employee_entity_1 = require("../entities/employee.entity");
 class EmployeeController {
     constructor(employeeService, router) {
         this.employeeService = employeeService;
-        router.post("/", this.createEmployee.bind(this));
+        router.post("/", (0, authorization_middleware_1.checkRole)([employee_entity_1.EmployeeRole.HR, employee_entity_1.EmployeeRole.UX]), this.createEmployee.bind(this));
         router.get("/", this.getAllEmployees.bind(this));
         router.get("/:id", this.getEmployeeById.bind(this));
-        router.put("/:id", this.updateEmployee.bind(this));
-        router.delete("/:id", this.removeEmployee.bind(this));
+        router.put("/:id", (0, authorization_middleware_1.checkRole)([employee_entity_1.EmployeeRole.HR]), this.updateEmployee.bind(this));
+        router.delete("/:id", (0, authorization_middleware_1.checkRole)([employee_entity_1.EmployeeRole.HR]), this.removeEmployee.bind(this));
     }
     createEmployee(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -34,7 +36,7 @@ class EmployeeController {
                     console.log(JSON.stringify(errors));
                     throw new httpExceptions_1.default(400, JSON.stringify(errors));
                 }
-                const savedEmployee = yield this.employeeService.createEmployee(createEmployeeDto.email, createEmployeeDto.name, createEmployeeDto.age, createEmployeeDto.address);
+                const savedEmployee = yield this.employeeService.createEmployee(createEmployeeDto.email, createEmployeeDto.name, createEmployeeDto.age, createEmployeeDto.role, createEmployeeDto.password, createEmployeeDto.address);
                 res.status(201).send(savedEmployee);
             }
             catch (error) {
@@ -85,7 +87,7 @@ class EmployeeController {
                     console.log(JSON.stringify(errors));
                     throw new httpExceptions_1.default(400, JSON.stringify(errors));
                 }
-                yield this.employeeService.updateEmployeeById(id, employeeDto.name, employeeDto.email, employeeDto.age, employeeDto.address);
+                yield this.employeeService.updateEmployeeById(id, employeeDto.name, employeeDto.email, employeeDto.age, employeeDto.role, employeeDto.password, employeeDto.address);
                 res.status(200).send({ message: "Employee updated successfully" });
             }
             catch (error) {

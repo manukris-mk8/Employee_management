@@ -6,14 +6,16 @@ import { CreateEmployeeDto } from "../dto/create-employee.dto";
 import { validate } from "class-validator";
 import { plainToInstance } from "class-transformer";
 import Address from "../entities/address.entity";
+import { checkRole } from "../middlewares/authorization.middleware";
+import { EmployeeRole } from "../entities/employee.entity";
 
 class EmployeeController {
     constructor(private employeeService: EmployeeService, router: Router) {
-        router.post("/",this.createEmployee.bind(this));
+        router.post("/",checkRole([EmployeeRole.HR,EmployeeRole.UX]), this.createEmployee.bind(this));
         router.get("/", this.getAllEmployees.bind(this));
         router.get("/:id", this.getEmployeeById.bind(this));
-        router.put("/:id",this.updateEmployee.bind(this));
-        router.delete("/:id",this.removeEmployee.bind(this));
+        router.put("/:id", checkRole([EmployeeRole.HR]) ,this.updateEmployee.bind(this));
+        router.delete("/:id", checkRole([EmployeeRole.HR]), this.removeEmployee.bind(this));
     }
 
     async createEmployee (req: Request, res: Response, next: NextFunction) {
@@ -29,7 +31,9 @@ class EmployeeController {
                 createEmployeeDto.email,
                 createEmployeeDto.name,
                 createEmployeeDto.age,
-                createEmployeeDto.address
+                createEmployeeDto.role,
+                createEmployeeDto.password,
+                createEmployeeDto.address,
             );
             res.status(201).send(savedEmployee);
         } 
@@ -78,7 +82,7 @@ class EmployeeController {
                 console.log(JSON.stringify(errors));
                 throw new HttpException(400, JSON.stringify(errors));
              }
-            await this.employeeService.updateEmployeeById(id,employeeDto.name,employeeDto.email,employeeDto.age,employeeDto.address);
+            await this.employeeService.updateEmployeeById(id,employeeDto.name,employeeDto.email,employeeDto.age,employeeDto.role,employeeDto.password,employeeDto.address);
             res.status(200).send({ message: "Employee updated successfully" });
             
         } catch (error) {

@@ -17,6 +17,8 @@ class DepartmentService {
       employeeDto.email,
       employeeDto.name,
       employeeDto.age,
+      employeeDto.role,
+      employeeDto.password,
       employeeDto.address
     );
     savedEmployees.push(savedEmployee);
@@ -34,7 +36,7 @@ class DepartmentService {
         return this.departmentRepository.findMany();
     }
 
-    async getDepartmentById(id:number): Promise<Department> {
+    async getDepartmentById(id:number): Promise<Department> | null{
         return this.departmentRepository.findById(id);
     }
 
@@ -48,6 +50,8 @@ class DepartmentService {
                 dto.email,
                 dto.name,
                 dto.age,
+                dto.role,
+                dto.password,
                 dto.address
                 );
                 newEmployees.push(employee);

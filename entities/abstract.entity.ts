@@ -2,7 +2,7 @@ import { CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, Upd
 
 class AbstractEntity {
     @PrimaryGeneratedColumn()
-    id: Number;
+    id: number;
 
     @CreateDateColumn()
     createdAt: Date;

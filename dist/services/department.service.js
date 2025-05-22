@@ -23,7 +23,7 @@ class DepartmentService {
         return __awaiter(this, void 0, void 0, function* () {
             const savedEmployees = [];
             for (const employeeDto of employeesDto) {
-                const savedEmployee = yield this.employeeService.createEmployee(employeeDto.email, employeeDto.name, employeeDto.age, employeeDto.address);
+                const savedEmployee = yield this.employeeService.createEmployee(employeeDto.email, employeeDto.name, employeeDto.age, employeeDto.role, employeeDto.password, employeeDto.address);
                 savedEmployees.push(savedEmployee);
             }
             const newDepartment = new department_entity_1.default();
@@ -48,7 +48,7 @@ class DepartmentService {
             if (existingDepartment) {
                 const newEmployees = [];
                 for (const dto of employeesDto) {
-                    const employee = yield this.employeeService.createEmployee(dto.email, dto.name, dto.age, dto.address);
+                    const employee = yield this.employeeService.createEmployee(dto.email, dto.name, dto.age, dto.role, dto.password, dto.address);
                     newEmployees.push(employee);
                 }
                 existingDepartment.name = name;

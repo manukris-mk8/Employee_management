@@ -16,25 +16,27 @@ const httpExceptions_1 = __importDefault(require("../exceptions/httpExceptions")
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
 const create_department_dto_1 = require("../dto/create-department.dto");
+const authorization_middleware_1 = require("../middlewares/authorization.middleware");
+const employee_entity_1 = require("../entities/employee.entity");
 class DepartmentController {
     constructor(departmentService, router) {
         this.departmentService = departmentService;
-        router.post("/", this.createDepartment.bind(this));
+        router.post("/", (0, authorization_middleware_1.checkRole)([employee_entity_1.EmployeeRole.HR, employee_entity_1.EmployeeRole.UX]), this.createDepartment.bind(this));
         router.get("/", this.getAllDepartments.bind(this));
         router.get("/:id", this.getDepartmentById.bind(this));
-        router.put("/:id", this.updateDepartment.bind(this));
-        router.delete("/:id", this.removeDepartment.bind(this));
+        router.put("/:id", (0, authorization_middleware_1.checkRole)([employee_entity_1.EmployeeRole.HR, employee_entity_1.EmployeeRole.UX]), this.updateDepartment.bind(this));
+        router.delete("/:id", (0, authorization_middleware_1.checkRole)([employee_entity_1.EmployeeRole.HR, employee_entity_1.EmployeeRole.UX]), this.removeDepartment.bind(this));
     }
     createDepartment(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const createDepartmentDto = (0, class_transformer_1.plainToInstance)(create_department_dto_1.CreateDepartmentDto, req.body);
-                const errors = yield (0, class_validator_1.validate)(createDepartmentDto);
+                const errors = yield (0, class_validator_1.validate)(createDepartmentDto, { whitelist: true, forbidNonWhitelisted: true });
                 if (errors.length > 0) {
                     console.log(JSON.stringify(errors));
                     throw new httpExceptions_1.default(400, JSON.stringify(errors));
                 }
-                const savedDepartment = yield this.departmentService.createDepartment(createDepartmentDto.name, createDepartmentDto.employees);
+                const savedDepartment = yield this.departmentService.createDepartment(createDepartmentDto.name);
                 res.status(201).send(savedDepartment);
             }
             catch (error) {
@@ -85,12 +87,16 @@ class DepartmentController {
                     console.log(JSON.stringify(errors));
                     throw new httpExceptions_1.default(400, JSON.stringify(errors));
                 }
-                yield this.departmentService.updateDepartmentById(id, departmentDto.name, departmentDto.employees);
+                yield this.departmentService.updateDepartmentById(id, departmentDto.name);
                 res.status(200).send({ message: "Department updated successfully" });
             }
             catch (error) {
                 next(error);
             }
+        });
+    }
+    addEmployeesToDepartment(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
         });
     }
     removeDepartment(req, res, next) {

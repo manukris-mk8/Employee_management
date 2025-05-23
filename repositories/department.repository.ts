@@ -30,7 +30,7 @@ class DepartmentRepository {
     }
 
     async remove(department: Department) : Promise<void> {
-        await this.repository.remove(department);
+        await this.repository.softRemove(department);
     }
 }
 

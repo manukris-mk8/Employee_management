@@ -22,7 +22,7 @@ __decorate([
     __metadata("design:type", String)
 ], CreateDepartmentDto.prototype, "name", void 0);
 __decorate([
-    (0, class_validator_1.ValidateNested)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
     (0, class_transformer_1.Type)(() => create_employee_dto_1.CreateEmployeeDto),
     __metadata("design:type", Array)
 ], CreateDepartmentDto.prototype, "employees", void 0);

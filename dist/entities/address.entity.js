@@ -20,13 +20,24 @@ let Address = class Address extends abstract_entity_1.default {
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
+], Address.prototype, "houseNo", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
 ], Address.prototype, "line1", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Address.prototype, "line2", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Address.prototype, "pincode", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => employee_entity_1.default),
+    (0, typeorm_1.OneToOne)(() => employee_entity_1.default, (employee) => employee.address, {
+        onDelete: 'CASCADE'
+    }),
+    (0, typeorm_1.JoinColumn)(),
     __metadata("design:type", employee_entity_1.default)
 ], Address.prototype, "employee", void 0);
 Address = __decorate([

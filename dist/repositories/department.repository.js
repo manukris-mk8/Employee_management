@@ -45,7 +45,7 @@ class DepartmentRepository {
     }
     remove(department) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.repository.remove(department);
+            yield this.repository.softRemove(department);
         });
     }
 }

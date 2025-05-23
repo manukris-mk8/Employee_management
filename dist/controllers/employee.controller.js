@@ -18,13 +18,14 @@ const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
 const authorization_middleware_1 = require("../middlewares/authorization.middleware");
 const employee_entity_1 = require("../entities/employee.entity");
+const update_employee_dto_1 = require("../dto/update-employee.dto");
 class EmployeeController {
     constructor(employeeService, router) {
         this.employeeService = employeeService;
         router.post("/", (0, authorization_middleware_1.checkRole)([employee_entity_1.EmployeeRole.HR, employee_entity_1.EmployeeRole.UX]), this.createEmployee.bind(this));
         router.get("/", this.getAllEmployees.bind(this));
         router.get("/:id", this.getEmployeeById.bind(this));
-        router.put("/:id", (0, authorization_middleware_1.checkRole)([employee_entity_1.EmployeeRole.HR]), this.updateEmployee.bind(this));
+        router.put("/:id", (0, authorization_middleware_1.checkRole)([employee_entity_1.EmployeeRole.HR, employee_entity_1.EmployeeRole.UX]), this.updateEmployee.bind(this));
         router.delete("/:id", (0, authorization_middleware_1.checkRole)([employee_entity_1.EmployeeRole.HR]), this.removeEmployee.bind(this));
     }
     createEmployee(req, res, next) {
@@ -36,7 +37,7 @@ class EmployeeController {
                     console.log(JSON.stringify(errors));
                     throw new httpExceptions_1.default(400, JSON.stringify(errors));
                 }
-                const savedEmployee = yield this.employeeService.createEmployee(createEmployeeDto.email, createEmployeeDto.name, createEmployeeDto.age, createEmployeeDto.role, createEmployeeDto.password, createEmployeeDto.address);
+                const savedEmployee = yield this.employeeService.createEmployee(createEmployeeDto);
                 res.status(201).send(savedEmployee);
             }
             catch (error) {
@@ -81,13 +82,13 @@ class EmployeeController {
                 if (isNaN(id)) {
                     throw new httpExceptions_1.default(400, "Invalid employee ID");
                 }
-                const employeeDto = (0, class_transformer_1.plainToInstance)(create_employee_dto_1.CreateEmployeeDto, req.body);
+                const employeeDto = (0, class_transformer_1.plainToInstance)(update_employee_dto_1.UpdateEmployeeDto, req.body);
                 const errors = yield (0, class_validator_1.validate)(employeeDto);
                 if (errors.length > 0) {
                     console.log(JSON.stringify(errors));
                     throw new httpExceptions_1.default(400, JSON.stringify(errors));
                 }
-                yield this.employeeService.updateEmployeeById(id, employeeDto.name, employeeDto.email, employeeDto.age, employeeDto.role, employeeDto.password, employeeDto.address);
+                yield this.employeeService.updateEmployeeById(id, employeeDto);
                 res.status(200).send({ message: "Employee updated successfully" });
             }
             catch (error) {

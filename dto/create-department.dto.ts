@@ -8,7 +8,7 @@ export class CreateDepartmentDto {
   @IsString()
   name: string;
 
-  @ValidateNested()
+  @ValidateNested({each: true})
   @Type(() => CreateEmployeeDto)
   employees: CreateEmployeeDto[];
 }

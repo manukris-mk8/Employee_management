@@ -22,7 +22,8 @@ class EmployeeRepository {
         return __awaiter(this, void 0, void 0, function* () {
             return this.repository.find({
                 relations: {
-                    address: true
+                    address: true,
+                    department: true
                 }
             });
         });
@@ -32,7 +33,8 @@ class EmployeeRepository {
             return this.repository.findOne({
                 where: { id },
                 relations: {
-                    address: true
+                    address: true,
+                    department: true
                 }
             });
         });

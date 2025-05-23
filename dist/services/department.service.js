@@ -14,21 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const department_entity_1 = __importDefault(require("../entities/department.entity"));
 class DepartmentService {
-    constructor(departmentRepository, employeeService) {
+    constructor(departmentRepository) {
         this.departmentRepository = departmentRepository;
-        this.employeeService = employeeService;
-        this.employeeService = employeeService;
     }
-    createDepartment(name, employeesDto) {
+    createDepartment(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            const savedEmployees = [];
-            for (const employeeDto of employeesDto) {
-                const savedEmployee = yield this.employeeService.createEmployee(employeeDto.email, employeeDto.name, employeeDto.age, employeeDto.role, employeeDto.password, employeeDto.address);
-                savedEmployees.push(savedEmployee);
-            }
             const newDepartment = new department_entity_1.default();
             newDepartment.name = name;
-            newDepartment.employees = savedEmployees;
             return this.departmentRepository.create(newDepartment);
         });
     }
@@ -42,21 +34,24 @@ class DepartmentService {
             return this.departmentRepository.findById(id);
         });
     }
-    updateDepartmentById(id, name, employeesDto) {
+    updateDepartmentById(id, name) {
         return __awaiter(this, void 0, void 0, function* () {
             const existingDepartment = yield this.departmentRepository.findById(id);
             if (existingDepartment) {
-                const newEmployees = [];
-                for (const dto of employeesDto) {
-                    const employee = yield this.employeeService.createEmployee(dto.email, dto.name, dto.age, dto.role, dto.password, dto.address);
-                    newEmployees.push(employee);
-                }
                 existingDepartment.name = name;
-                existingDepartment.employees = newEmployees;
                 yield this.departmentRepository.update(id, existingDepartment);
             }
         });
     }
+    // async addEmployeesToDepartment(id:number,employees:number[]) : Promise<void> {
+    //     const existingDepartment = await this.departmentRepository.findById(id);
+    //     const employeeDto = plainToInstance(UpdateEmployeeDto, id);
+    //     if (existingDepartment){
+    //         for (const emp of employees) {
+    //             await this.employeeService.updateEmployeeById(emp,employeeDto)
+    //         }
+    //     }
+    // }
     removeDepartmentById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const existingDepartment = yield this.departmentRepository.findById(id);

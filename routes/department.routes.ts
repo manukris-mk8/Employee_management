@@ -11,10 +11,9 @@ import EmployeeService from "../services/employee.service";
 
 const departmentRouter = express.Router();
 const employeeRepository = new EmployeeRepository(datasource.getRepository(Employee));
-const employeeService = new EmployeeService(employeeRepository);
 
 const departmentRepository = new DepartmentRepository(datasource.getRepository(Department));
-const departmentService = new DepartmentService(departmentRepository,employeeService);
+const departmentService = new DepartmentService(departmentRepository);
 const departmentController = new DepartmentController(departmentService,departmentRouter);
 
 export default departmentRouter;

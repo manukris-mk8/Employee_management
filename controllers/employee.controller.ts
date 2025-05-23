@@ -8,13 +8,18 @@ import { plainToInstance } from "class-transformer";
 import Address from "../entities/address.entity";
 import { checkRole } from "../middlewares/authorization.middleware";
 import { EmployeeRole } from "../entities/employee.entity";
+import { UpdateEmployeeDto } from "../dto/update-employee.dto";
+import { LoggerService } from "../services/logger.service";
+import { error } from "winston";
 
 class EmployeeController {
+    private logger = LoggerService.getInstance('EmployeeController');
+
     constructor(private employeeService: EmployeeService, router: Router) {
         router.post("/",checkRole([EmployeeRole.HR,EmployeeRole.UX]), this.createEmployee.bind(this));
         router.get("/", this.getAllEmployees.bind(this));
         router.get("/:id", this.getEmployeeById.bind(this));
-        router.put("/:id", checkRole([EmployeeRole.HR]) ,this.updateEmployee.bind(this));
+        router.put("/:id", checkRole([EmployeeRole.HR,EmployeeRole.UX]),this.updateEmployee.bind(this));
         router.delete("/:id", checkRole([EmployeeRole.HR]), this.removeEmployee.bind(this));
     }
 
@@ -24,20 +29,15 @@ class EmployeeController {
             const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
             const errors = await validate(createEmployeeDto);
             if (errors.length > 0) {
-                console.log(JSON.stringify(errors));
+                this.logger.error(error);
                 throw new HttpException(400, JSON.stringify(errors));
              }
-            const savedEmployee = await this.employeeService.createEmployee(
-                createEmployeeDto.email,
-                createEmployeeDto.name,
-                createEmployeeDto.age,
-                createEmployeeDto.role,
-                createEmployeeDto.password,
-                createEmployeeDto.address,
-            );
+            const savedEmployee = await this.employeeService.createEmployee(createEmployeeDto);
+            this.logger.info("Employee created successfully");
             res.status(201).send(savedEmployee);
         } 
         catch (error) {
+            this.logger.error("employee creation failed" + error);
             next(error);
         }
       
@@ -46,8 +46,10 @@ class EmployeeController {
     async getAllEmployees (req: Request, res: Response, next: NextFunction) {
         try {
             const employees = await this.employeeService.getAllEmployees();
+            this.logger.info("Employee retrieved successfully");
             res.status(200).send(employees);
         } catch (error) {
+            this.logger.error("employee retrieval failed" + error);
             next(error);
         }
     }
@@ -56,15 +58,17 @@ class EmployeeController {
         try {
             const id = Number(req.params.id);
             if(isNaN(id)) {
+                this.logger.error('invalid employee id')
                 throw new HttpException(400,"Invalid employee ID");
             }
             const employee = await this.employeeService.getEmployeeById(id);
             if(!employee) {
+                this.logger.error('employee does not exist')
                 throw new HttpException(404,"employee not found");
             }
             res.status(200).send(employee);
         } catch (error) {
-            console.log(error);
+            this.logger.error(error);
             next(error);
         }
         
@@ -74,18 +78,20 @@ class EmployeeController {
         try {
             const id = Number(req.params.id);
             if(isNaN(id)) {
+                this.logger.error('invalid employee id')
                 throw new HttpException(400,"Invalid employee ID");
             }
-            const employeeDto = plainToInstance(CreateEmployeeDto, req.body);
+            const employeeDto = plainToInstance(UpdateEmployeeDto, req.body);
             const errors = await validate(employeeDto);
             if (errors.length > 0) {
-                console.log(JSON.stringify(errors));
+                this.logger.error(JSON.stringify(errors));
                 throw new HttpException(400, JSON.stringify(errors));
              }
-            await this.employeeService.updateEmployeeById(id,employeeDto.name,employeeDto.email,employeeDto.age,employeeDto.role,employeeDto.password,employeeDto.address);
+            await this.employeeService.updateEmployeeById(id,employeeDto);
             res.status(200).send({ message: "Employee updated successfully" });
             
         } catch (error) {
+            this.logger.error("employee updation failed" + error);
             next(error)
             
         }
@@ -101,12 +107,14 @@ class EmployeeController {
         try {
             const id = Number(req.params.id);
             if(isNaN(id)) {
+                this.logger.error('invalid employee id')
                 throw new HttpException(400,"Invalid employee ID");
             }
             await this.employeeService.removeEmployeeById(id);
             res.status(200).send({ message: "Employee deleted successfully" });
             
         } catch (error) {
+            this.logger.error("employee deletion failed" + error);
             next(error);
         }
     }

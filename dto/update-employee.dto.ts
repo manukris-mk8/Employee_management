@@ -1,8 +1,7 @@
-import { IsDate, IsEmail, IsEnum, isNotEmpty, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
+import { IsEmail, IsEnum, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
 import { CreateAddressDto } from "./create-address.dto";
 import { Type } from "class-transformer";
 import { EmployeeRole, Status } from "../entities/employee.entity";
-import Department from "../entities/department.entity";
 
 export class UpdateEmployeeDto {
   @IsString()

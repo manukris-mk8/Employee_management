@@ -9,7 +9,7 @@ import { authRouter } from "./routes/auth.route";
 import { authMiddleware } from "./middlewares/auth.middleware";
 import { LoggerService } from "./services/logger.service";
 
-const {Client} = require('pg');
+// const {Client} = require('pg');
 
 const server = express();
 const logger = LoggerService.getInstance('app()');

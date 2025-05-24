@@ -14,10 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const httpExceptions_1 = __importDefault(require("../exceptions/httpExceptions"));
+const logger_service_1 = require("../services/logger.service");
 class AuthController {
     constructor(authService, router) {
         this.authService = authService;
         this.router = router;
+        this.logger = logger_service_1.LoggerService.getInstance('AuthController');
         router.post('/login', this.login.bind(this));
     }
     login(req, res, next) {
@@ -25,12 +27,15 @@ class AuthController {
             try {
                 const { email, password } = req.body;
                 if (!email || !password) {
+                    this.logger.error('require email and password');
                     throw new httpExceptions_1.default(400, "Email and password is required");
                 }
                 const data = yield this.authService.login(email, password);
+                this.logger.info('Authentication successfull');
                 res.status(200).send(data);
             }
             catch (error) {
+                this.logger.error('Authentication failed');
                 next(error);
             }
         });

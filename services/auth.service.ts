@@ -4,18 +4,23 @@ import { JWT_SECRET, JWT_VALIDITY } from "../utils/constants";
 import EmployeeService from "./employee.service";
 import  bcrypt  from "bcrypt" ;
 import jwt from 'jsonwebtoken'
+import { LoggerService } from "./logger.service";
 
 class AuthService {
+    private logger = LoggerService.getInstance('AuthService');
+    
     constructor(private employeeService: EmployeeService) {}
 
     async login(email: string, password: string) {
         const employee = await this.employeeService.getEmployeeByEmail(email);
         if(!employee) {
+            this.logger.error('invalid user email');
             throw new HttpException(404,"No such user");
         }
         const isPasswordValid = await bcrypt.compare(password,employee.password);
 
         if (!isPasswordValid) {
+            this.logger.error('invalid password');
             throw new HttpException(400,"Invalid Password");
         }
 

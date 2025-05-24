@@ -1,7 +1,4 @@
-import { add, Logger } from "winston";
-import { CreateAddressDto } from "../dto/create-address.dto";
 import Address from "../entities/address.entity";
-import Department from "../entities/department.entity";
 import Employee, { EmployeeRole } from "../entities/employee.entity";
 import EmployeeRepository from "../repositories/employee.repository";
 import bcrypt from "bcrypt";

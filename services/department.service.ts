@@ -1,10 +1,5 @@
-import { plainToInstance } from "class-transformer";
-import { CreateEmployeeDto } from "../dto/create-employee.dto";
-import { UpdateEmployeeDto } from "../dto/update-employee.dto";
 import Department from "../entities/department.entity";
-import Employee from "../entities/employee.entity";
 import DepartmentRepository from "../repositories/department.repository";
-import EmployeeService from "./employee.service";
 import { LoggerService } from "./logger.service";
 import httpException from "../exceptions/httpExceptions";
 

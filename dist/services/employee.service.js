@@ -16,6 +16,7 @@ const address_entity_1 = __importDefault(require("../entities/address.entity"));
 const employee_entity_1 = __importDefault(require("../entities/employee.entity"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const logger_service_1 = require("./logger.service");
+const httpExceptions_1 = __importDefault(require("../exceptions/httpExceptions"));
 class EmployeeService {
     constructor(employeeRepository, departmentService) {
         this.employeeRepository = employeeRepository;
@@ -26,6 +27,10 @@ class EmployeeService {
         return __awaiter(this, void 0, void 0, function* () {
             const { employeeId, email, name, age, role, password, departmentId, address, experience, status, dateOfJoining } = employeeDto;
             const department = yield this.departmentService.getDepartmentById(departmentId);
+            if (!department) {
+                this.logger.error("This department does not exist");
+                throw new httpExceptions_1.default(400, "invalid department id");
+            }
             this.logger.info('createEmployee - START');
             const newAddress = new address_entity_1.default();
             newAddress.houseNo = address.houseNo;
@@ -64,7 +69,7 @@ class EmployeeService {
             const employee = yield this.employeeRepository.findById(id);
             if (!employee) {
                 this.logger.error(`getEmployeeById - FAILED: Employee with ID ${id} not found`);
-                throw new Error("Employee not found");
+                throw new httpExceptions_1.default(404, "Employee not found");
             }
             this.logger.info(`getEmployeeById - SUCCESS: Found employee with ID ${id}`);
             return employee;
@@ -118,7 +123,7 @@ class EmployeeService {
             }
             else {
                 this.logger.error(`updateEmployeeById - FAILED: Employee with ID ${id} not found`);
-                throw new Error(`Employee with ID ${id} not found`);
+                throw new httpExceptions_1.default(400, `Employee with ID ${id} not found`);
             }
         });
     }
@@ -131,7 +136,8 @@ class EmployeeService {
                 this.logger.info(`removeEmployeeById - SUCCESS: Removed employee with ID ${id}`);
             }
             else {
-                this.logger.warn(`removeEmployeeById - NOT FOUND: Employee with ID ${id}`);
+                this.logger.error(`removeEmployeeById - NOT FOUND: Employee with ID ${id}`);
+                throw new httpExceptions_1.default(400, "Invalid employee ID");
             }
         });
     }

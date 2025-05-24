@@ -13,33 +13,54 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const department_entity_1 = __importDefault(require("../entities/department.entity"));
+const logger_service_1 = require("./logger.service");
+const httpExceptions_1 = __importDefault(require("../exceptions/httpExceptions"));
 class DepartmentService {
     constructor(departmentRepository) {
         this.departmentRepository = departmentRepository;
+        this.logger = logger_service_1.LoggerService.getInstance('DepartmentService');
     }
     createDepartment(name) {
         return __awaiter(this, void 0, void 0, function* () {
+            this.logger.info("create department -- START--");
             const newDepartment = new department_entity_1.default();
             newDepartment.name = name;
+            this.logger.info("create department -- END--");
             return this.departmentRepository.create(newDepartment);
         });
     }
     getAllDepartments() {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.departmentRepository.findMany();
+            this.logger.info("get all departments --START--");
+            const departments = yield this.departmentRepository.findMany();
+            this.logger.info(`get all departments SUCCESS: Retrieved ${departments.length} departments`);
+            return departments;
         });
     }
     getDepartmentById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.departmentRepository.findById(id);
+            this.logger.info("get all departments --START--");
+            const department = yield this.departmentRepository.findById(id);
+            if (!department) {
+                this.logger.error(`getDepartmentById - FAILED: Department with ID ${id} not found`);
+                throw new httpExceptions_1.default(404, "Department not found");
+            }
+            this.logger.info(`getDepartmentById - SUCCESS: Found department with ID ${id}`);
+            return department;
         });
     }
     updateDepartmentById(id, name) {
         return __awaiter(this, void 0, void 0, function* () {
+            this.logger.info(`updateDepartmentById - START: ID = ${id}`);
             const existingDepartment = yield this.departmentRepository.findById(id);
             if (existingDepartment) {
                 existingDepartment.name = name;
                 yield this.departmentRepository.update(id, existingDepartment);
+                this.logger.info(`updateDepartmentById - SUCCESS: Updated department with ID ${id}`);
+            }
+            else {
+                this.logger.error(`updateDepartmentById - FAILED: department with ID ${id} not found`);
+                throw new httpExceptions_1.default(400, `Department with ID ${id} not found`);
             }
         });
     }
@@ -54,9 +75,15 @@ class DepartmentService {
     // }
     removeDepartmentById(id) {
         return __awaiter(this, void 0, void 0, function* () {
+            this.logger.info(`removeDepartmentById - START: ID = ${id}`);
             const existingDepartment = yield this.departmentRepository.findById(id);
             if (existingDepartment) {
                 yield this.departmentRepository.remove(existingDepartment);
+                this.logger.info(`removeDepartmentById - SUCCESS: Removed department with ID ${id}`);
+            }
+            else {
+                this.logger.error(`removeDepartmentById - NOT FOUND: department with ID ${id}`);
+                throw new httpExceptions_1.default(400, "Invalid department ID");
             }
         });
     }

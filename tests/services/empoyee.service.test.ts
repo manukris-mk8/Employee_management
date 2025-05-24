@@ -3,16 +3,21 @@ import { mock, MockProxy } from 'jest-mock-extended';
 import EmployeeRepository from '../../repositories/employee.repository';
 import EmployeeService from '../../services/employee.service';
 import Employee from '../../entities/employee.entity';
+import DepartmentService from '../../services/department.service';
 
 
 describe('EmployeeService', () => {
 
     let employeeRepository: MockProxy<EmployeeRepository>;
     let employeeService: EmployeeService;
+    let departmentService: DepartmentService
 
     beforeEach(() => {
     employeeRepository = mock<EmployeeRepository>();
-    employeeService = new EmployeeService(employeeRepository)
+    departmentService = mock<DepartmentService>();
+
+    
+    employeeService = new EmployeeService(employeeRepository,departmentService)
 })
 
     describe('getEmployeeById', () => {

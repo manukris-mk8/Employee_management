@@ -16,18 +16,22 @@ const httpExceptions_1 = __importDefault(require("../exceptions/httpExceptions")
 const constants_1 = require("../utils/constants");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const logger_service_1 = require("./logger.service");
 class AuthService {
     constructor(employeeService) {
         this.employeeService = employeeService;
+        this.logger = logger_service_1.LoggerService.getInstance('AuthService');
     }
     login(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             const employee = yield this.employeeService.getEmployeeByEmail(email);
             if (!employee) {
+                this.logger.error('invalid user email');
                 throw new httpExceptions_1.default(404, "No such user");
             }
             const isPasswordValid = yield bcrypt_1.default.compare(password, employee.password);
             if (!isPasswordValid) {
+                this.logger.error('invalid password');
                 throw new httpExceptions_1.default(400, "Invalid Password");
             }
             const payload = {

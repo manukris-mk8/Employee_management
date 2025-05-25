@@ -25,7 +25,7 @@ class DepartmentService {
         return departments;
     }
 
-    async getDepartmentById(id:number): Promise<Department> | null{
+    async getDepartmentById(id:number): Promise<Department>{
         this.logger.info("get all departments --START--")
         const department = await this.departmentRepository.findById(id);
         if (!department){

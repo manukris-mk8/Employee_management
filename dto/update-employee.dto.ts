@@ -4,50 +4,51 @@ import { Type } from "class-transformer";
 import { EmployeeRole, Status } from "../entities/employee.entity";
 
 export class UpdateEmployeeDto {
-  @IsString()
+
   @IsOptional()
-  employeeId: string
+  @IsString()
+  employeeId?: string
 
 //   @IsNotEmpty()
   @IsOptional()
   @IsEmail()
-  email: string;
+  email?: string;
 
 //   @IsNotEmpty()
   @IsOptional()
   @IsString()
-  name: string;
+  name?: string;
 
 //   @IsNotEmpty()
   @IsOptional()
   @IsNumber()
-  age: number;
+  age?: number;
 
 //   @IsNotEmpty()
   @IsOptional()
-  password: string;
+  password?: string;
   
   @IsOptional()
-  departmentId: number;
+  departmentId?: number;
 
   @IsOptional()
   @IsEnum(EmployeeRole)
-  role: EmployeeRole
+  role?: EmployeeRole
 
   @IsOptional()
   @ValidateNested()
   @Type(() => CreateAddressDto)
-  address: CreateAddressDto;
+  address?: CreateAddressDto;
 
   @IsOptional()
   @IsNumber()
-  experience: number;
+  experience?: number;
 
   @IsOptional()
   @IsEnum(Status)
-  status: Status
+  status?: Status
   
   @IsOptional()
   // @IsDate()
-  dateOfJoining: Date;
+  dateOfJoining?: Date;
 }

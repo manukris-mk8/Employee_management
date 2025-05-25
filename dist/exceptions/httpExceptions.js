@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class httpException extends Error {
+class HttpException extends Error {
     constructor(status, message) {
         super(message);
         this.status = status;
         this.message = message;
     }
 }
-exports.default = httpException;
+exports.default = HttpException;
 //# sourceMappingURL=httpExceptions.js.map

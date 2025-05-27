@@ -14,7 +14,7 @@ class DepartmentRepository {
         });
     }
 
-    async findById(id: number) : Promise<Department> {
+    async findById(id: number) : Promise<Department | null> {
         return this.repository.findOne({
             where: {id},
             relations : {employees :true}

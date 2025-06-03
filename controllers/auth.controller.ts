@@ -19,7 +19,7 @@ export class AuthController {
             }
             const data = await this.authService.login(email,password)
             this.logger.info('Authentication successfull');
-            res.status(200).send(data)
+            return res.status(200).json({data})
             
         } catch (error) {
             this.logger.error('Authentication failed');

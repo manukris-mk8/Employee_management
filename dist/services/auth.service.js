@@ -37,12 +37,13 @@ class AuthService {
             const payload = {
                 id: employee.id,
                 email: employee.email,
+                name: employee.name,
                 role: employee.role
             };
             const token = jsonwebtoken_1.default.sign(payload, constants_1.JWT_SECRET, { expiresIn: constants_1.JWT_VALIDITY });
             return {
                 tokenType: "Bearer",
-                accessToken: token
+                accessToken: Object.assign(Object.assign({}, payload), { token })
             };
         });
     }

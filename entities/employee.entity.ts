@@ -49,7 +49,7 @@ class Employee extends AbstractEntity {
   department: Department;
 
   @Column()
-  password: string;
+  password?: string;
 
   @Column()
   experience: number;

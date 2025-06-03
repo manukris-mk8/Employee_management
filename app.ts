@@ -8,12 +8,13 @@ import departmentRouter from "./routes/department.routes";
 import { authRouter } from "./routes/auth.route";
 import { authMiddleware } from "./middlewares/auth.middleware";
 import { LoggerService } from "./services/logger.service";
-
+import cors from 'cors'
 // const {Client} = require('pg');
 
 const server = express();
 const logger = LoggerService.getInstance('app()');
 
+server.use(cors())
 server.use(express.json());
 server.use(loggerMiddleware);
 server.use(processTimeMiddleware);

@@ -18,7 +18,7 @@ class EmployeeController {
         router.get("/", this.getAllEmployees.bind(this));
         router.get("/:id", this.getEmployeeById.bind(this));
         router.put("/:id", checkRole([EmployeeRole.HR,EmployeeRole.UX]),this.updateEmployee.bind(this));
-        router.delete("/:id", checkRole([EmployeeRole.HR]), this.removeEmployee.bind(this));
+        router.delete("/:id", checkRole([EmployeeRole.HR,EmployeeRole.DEVELOPER]), this.removeEmployee.bind(this));
     }
 
     async createEmployee (req: Request, res: Response, next: NextFunction) {

@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -72,7 +83,8 @@ class EmployeeService {
                 throw new httpExceptions_1.default(404, "Employee not found");
             }
             this.logger.info(`getEmployeeById - SUCCESS: Found employee with ID ${id}`);
-            return employee;
+            const { password } = employee, employeeDataWithoutPassword = __rest(employee, ["password"]);
+            return employeeDataWithoutPassword;
         });
     }
     getEmployeeByEmail(email) {
@@ -98,23 +110,20 @@ class EmployeeService {
                 let newAddress;
                 const department = yield this.departmentService.getDepartmentById(departmentId);
                 if (address) {
-                    newAddress = new address_entity_1.default();
-                    newAddress.houseNo = address.houseNo;
-                    newAddress.line1 = address.line1;
-                    newAddress.line2 = address.line2;
-                    newAddress.pincode = address.pincode;
-                }
-                else {
-                    newAddress = null;
+                    // newAddress = new Address();
+                    existingEmployee.address.houseNo = address.houseNo;
+                    existingEmployee.address.line1 = address.line1;
+                    existingEmployee.address.line2 = address.line2;
+                    existingEmployee.address.pincode = address.pincode;
                 }
                 existingEmployee.employeeId = employeeId || existingEmployee.employeeId;
                 existingEmployee.name = name || existingEmployee.name;
                 existingEmployee.email = email || existingEmployee.email;
                 existingEmployee.age = age || existingEmployee.age;
                 existingEmployee.role = role || existingEmployee.role;
-                existingEmployee.password = password ? yield bcrypt_1.default.hash(password, 10) : existingEmployee.password;
+                existingEmployee.password = password && password !== '' ? yield bcrypt_1.default.hash(password, 10) : existingEmployee.password;
                 existingEmployee.department = department || existingEmployee.department;
-                existingEmployee.address = newAddress ? newAddress : existingEmployee.address;
+                existingEmployee.address = existingEmployee.address;
                 existingEmployee.experience = experience || existingEmployee.experience;
                 existingEmployee.status = status || existingEmployee.status;
                 existingEmployee.dateOfJoining = dateOfJoining || existingEmployee.dateOfJoining;

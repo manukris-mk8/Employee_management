@@ -67,7 +67,9 @@ class EmployeeService {
             throw new httpException(404,"Employee not found");
         }
         this.logger.info(`getEmployeeById - SUCCESS: Found employee with ID ${id}`);
-        return employee;
+        const {password, ...employeeDataWithoutPassword} = employee;
+
+        return employeeDataWithoutPassword;
     }
 
     async getEmployeeByEmail(email: string): Promise<Employee | null> {
@@ -94,23 +96,21 @@ class EmployeeService {
             const department = await this.departmentService.getDepartmentById(departmentId)
 
                 if (address) {
-                    newAddress = new Address();
-                    newAddress.houseNo = address.houseNo;
-                    newAddress.line1 = address.line1;
-                    newAddress.line2 = address.line2;
-                    newAddress.pincode = address.pincode;
-                } else {
-                    newAddress = null;
-                }
+                    // newAddress = new Address();
+                    existingEmployee.address.houseNo = address.houseNo;
+                    existingEmployee.address.line1 = address.line1;
+                    existingEmployee.address.line2 = address.line2;
+                    existingEmployee.address.pincode = address.pincode;
+                } 
             
             existingEmployee.employeeId = employeeId || existingEmployee.employeeId;
             existingEmployee.name = name || existingEmployee.name;
             existingEmployee.email = email || existingEmployee.email;
             existingEmployee.age = age || existingEmployee.age;
             existingEmployee.role = role || existingEmployee.role;
-            existingEmployee.password = password? await bcrypt.hash(password, 10) : existingEmployee.password;
+            existingEmployee.password = password && password!=='' ? await bcrypt.hash(password, 10) : existingEmployee.password;
             existingEmployee.department = department || existingEmployee.department;
-            existingEmployee.address = newAddress ? newAddress : existingEmployee.address;
+            existingEmployee.address = existingEmployee.address;
             existingEmployee.experience = experience || existingEmployee.experience;
             existingEmployee.status = status || existingEmployee.status;
             existingEmployee.dateOfJoining = dateOfJoining || existingEmployee.dateOfJoining;

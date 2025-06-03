@@ -29,7 +29,7 @@ class EmployeeController {
         router.get("/", this.getAllEmployees.bind(this));
         router.get("/:id", this.getEmployeeById.bind(this));
         router.put("/:id", (0, authorization_middleware_1.checkRole)([employee_entity_1.EmployeeRole.HR, employee_entity_1.EmployeeRole.UX]), this.updateEmployee.bind(this));
-        router.delete("/:id", (0, authorization_middleware_1.checkRole)([employee_entity_1.EmployeeRole.HR]), this.removeEmployee.bind(this));
+        router.delete("/:id", (0, authorization_middleware_1.checkRole)([employee_entity_1.EmployeeRole.HR, employee_entity_1.EmployeeRole.DEVELOPER]), this.removeEmployee.bind(this));
     }
     createEmployee(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {

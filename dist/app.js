@@ -22,9 +22,11 @@ const department_routes_1 = __importDefault(require("./routes/department.routes"
 const auth_route_1 = require("./routes/auth.route");
 const auth_middleware_1 = require("./middlewares/auth.middleware");
 const logger_service_1 = require("./services/logger.service");
+const cors_1 = __importDefault(require("cors"));
 // const {Client} = require('pg');
 const server = (0, express_1.default)();
 const logger = logger_service_1.LoggerService.getInstance('app()');
+server.use((0, cors_1.default)());
 server.use(express_1.default.json());
 server.use(loggerMiddleware_1.default);
 server.use(processTimeMiddleware_1.processTimeMiddleware);
